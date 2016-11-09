@@ -1,0 +1,4 @@
+With the introduction of the Apple II family of computers, the wonders of programming, communicating, and just plain geeking out became affordable for an entire generation of budding enthusiasts and their families. By the end of the 70's an entire culture had risen up around the Apple II, and the energy of thousands of hardware and software hackers went into learning every last op-code and settable switch within the machine.
+It can't be discounted that Apple's successful foray into the educational market resulted in schools countrywide brimming with Apple IIs, and social groups collecting around the labs after school hours. All manner of things happened there, some documented below.
+
+These files range from explicit memory maps of the Apple II to long tutorials on how to "crack" games, that is, remove all copy protection and make the game easier to distribute between other pirates.
