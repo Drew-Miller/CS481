@@ -24,8 +24,8 @@ class Keyboard(Frame):
                 j += column[1]
 
     def changeCase(self):
-        #for child in self.winfo_children():
-        print("changed")    
+        for child in self.winfo_children():
+            child.checkText(self)
 
 
 class KeyButton(Button):
@@ -45,6 +45,7 @@ class KeyButton(Button):
             self.__val2 = t
 
         if self.__val1.isalpha() and len(self.__val1) is 1:
+            self.__val2 = self.__val1.lower()
             self.__type = "letter"
 
         if self.__val1 == "Shift":
@@ -53,7 +54,7 @@ class KeyButton(Button):
         if self.__val1 == "CapsLock":
             self.__type = "Caps"
 
-        self.config(text=self.__val1)
+        self.config(text=self.__val2)
 
     #check type, parent.shift and parent.caps for the output
     #set shift to false after using the shifted key
@@ -61,11 +62,12 @@ class KeyButton(Button):
         #for letters
         if self.__type is "letter":
             if bool(parent.shift) ^ bool(parent.caps):
-                self.__call(str(self.__val2.upper()))
+                self.__call(str(self.__val1))
             else:
-                self.__call(str(self.__val2.lower()))
+                self.__call(str(self.__val2))
 
             parent.shift = False
+            parent.changeCase()
 
         elif self.__type is "dual":
             if parent.shift:
@@ -74,10 +76,11 @@ class KeyButton(Button):
                 self.__call(str(self.__val2))
 
             parent.shift = False
+            parent.changeCase()
 
         elif self.__type is "special":
             self.__call(str(self.__val1))
-
+            parent.changeCase()
 
         elif self.__type is "Shift":
             parent.shift = not parent.shift
@@ -86,3 +89,16 @@ class KeyButton(Button):
         elif self.__type is "Caps":
             parent.caps = not parent.caps
             parent.changeCase()
+
+    def checkText(self, parent):
+        if self.__type is "letter":
+            if bool(parent.shift) ^ bool(parent.caps):
+                self.config(text=self.__val1)
+            else:
+                self.config(text=self.__val2)
+
+        elif self.__type is "dual":
+            if parent.shift:
+                self.config(text=self.__val1)
+            else:
+                self.config(text=self.__val2)
