@@ -5,7 +5,9 @@ try:
 except:
   from tkinter import *
 
-size = 15
+import copy
+
+size = 20
 
 class CellArray:
     def __init__(self, row, col):
@@ -19,15 +21,8 @@ class CellArray:
           for y in range(0, col):
               self.__array[r].append(0)
 
-    def Print(self):
-        for r, row in enumerate(self.__array):
-            for x, col in enumerate(row):
-                print("[" + str(col) + "]", end="")
-
-            print("")
-
     def step(self):
-        cpy = self.__array
+        cpy = copy.deepcopy(self.__array)
 
         rows = len(self.__array)
         columns = len(self.__array[0])
@@ -96,7 +91,6 @@ class CellCanvas(Canvas):
 
         Canvas.__init__(self, parent, width=self.__array.col*size, height=self.__array.row*size)
         self.bind("<Button-1>", self.click)
-
         self.pack()
 
     def display(self):
@@ -118,10 +112,44 @@ class CellCanvas(Canvas):
         self.__array.flip(y, x)
         self.drawRectangle(y, x)
 
+    def clear(self):
+        for x in range(0, self.__array.row):
+            for y in range(0, self.__array.col):
+                if self.__array.isAlive(x, y) is 1:
+                    self.__array.flip(x, y)
+
+    def step(self):
+        self.__array.step()
+
+
+def makeStep(canv):
+    canv.step()
+    canv.display()
+
+def clear(canv):
+    canv.clear()
+    canv.display()
 
 root = Tk()
 root.title("PyLife")
-c = CellArray(20,20)
-canvas = CellCanvas(root, c)
+root.resizable(0,0)
+
+canvasFrame = Frame(root)
+buttonFrame = Frame(root)
+canvasFrame.grid(row=0, column=0)
+buttonFrame.grid(row=1, column=0)
+
+cells = CellArray(20,20)
+canvas = CellCanvas(canvasFrame, cells)
 canvas.display()
+
+stepButton = Button(buttonFrame, text="step", command=lambda: makeStep(canvas))
+clearButton = Button(buttonFrame, text="clear", command=lambda: clear(canvas))
+quitButton = Button(buttonFrame, text="quit", command=root.quit)
+
+stepButton.grid(row=0, column=0)
+clearButton.grid(row=0, column=1)
+quitButton.grid(row=0, column=2)
+
+
 root.mainloop()
