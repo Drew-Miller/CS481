@@ -6,6 +6,7 @@ except:
   from tkinter import *
 
 import copy
+import time
 
 size = 20
 
@@ -14,6 +15,7 @@ class CellArray:
       self.__array = []
       self.row = row
       self.col = col
+      self.wrap = False
 
       for r in range(0, row):
           new = []
@@ -68,11 +70,29 @@ class CellArray:
         rows = len(self.__array)
         columns = len(self.__array[0])
 
-        if r < 0 or r >= rows:
-            return 0
+        if self.wrap is True:
+            if r < 0:
+                while r < 0:
+                    r += rows
 
-        if c < 0 or c >= columns:
-            return 0
+            elif r >= rows:
+                while r >= rows:
+                    r -= rows
+
+            if c < 0:
+                while c < 0:
+                    c += columns
+
+            elif c >= columns:
+                while c >= columns:
+                    c -= columns
+
+        elif self.wrap is False:
+            if r < 0 or r >= rows:
+                return 0
+
+            elif c < 0 or c >= columns:
+                return 0
 
         return self.__array[r][c]
 
@@ -130,26 +150,39 @@ def clear(canv):
     canv.clear()
     canv.display()
 
-root = Tk()
-root.title("PyLife")
-root.resizable(0,0)
+def wrap(self):
+    self.cells.wrap = not self.cells.wrap
 
-canvasFrame = Frame(root)
-buttonFrame = Frame(root)
-canvasFrame.grid(row=0, column=0)
-buttonFrame.grid(row=1, column=0)
+class PyLife():
+    def __init__(self):
+        self.root = Tk()
+        self.root.title("PyLife")
+        self.root.resizable(0,0)
 
-cells = CellArray(20,20)
-canvas = CellCanvas(canvasFrame, cells)
-canvas.display()
+        self.canvasFrame = Frame(self.root)
+        self.buttonFrame = Frame(self.root)
+        self.canvasFrame.grid(row=0, column=0)
+        self.buttonFrame.grid(row=1, column=0)
 
-stepButton = Button(buttonFrame, text="step", command=lambda: makeStep(canvas))
-clearButton = Button(buttonFrame, text="clear", command=lambda: clear(canvas))
-quitButton = Button(buttonFrame, text="quit", command=root.quit)
+        self.cells = CellArray(20,20)
+        self.canvas = CellCanvas(self.canvasFrame, self.cells)
+        self.canvas.display()
 
-stepButton.grid(row=0, column=0)
-clearButton.grid(row=0, column=1)
-quitButton.grid(row=0, column=2)
+        self.wrapButton = Button(self.buttonFrame, text="wrap", command=lambda: wrap(self))
+        self.stepButton = Button(self.buttonFrame, text="step", command=lambda: makeStep(self.canvas))
+        self.clearButton = Button(self.buttonFrame, text="clear", command=lambda: clear(self.canvas))
+        self.quitButton = Button(self.buttonFrame, text="quit", command=self.root.quit)
 
+        self.wrapButton.pack()
+        self.stepButton.pack()
+        self.clearButton.pack()
+        self.quitButton.pack()
 
-root.mainloop()
+        self.wrapButton.grid(row=0, column=0)
+        self.stepButton.grid(row=0, column=1)
+        self.clearButton.grid(row=0, column=2)
+        self.quitButton.grid(row=0, column=3)
+
+        self.root.mainloop()
+
+p = PyLife()
